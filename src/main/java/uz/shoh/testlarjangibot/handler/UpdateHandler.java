@@ -145,10 +145,12 @@ public class UpdateHandler {
             user.setState(UserState.MAIN);
             userRepository.save(user);
             sender.execute(MyMessageBuilder.goToMainMenuMessage(chatId));
-        } else {
+        }else{
             int indexOfLowLine = text.indexOf("_", 6);
             if (!(text.startsWith("+test_") && indexOfLowLine != -1)) {
                 sender.execute(MyMessageBuilder.createTestErrorMessage(chatId));
+            }else if(text.substring(6, indexOfLowLine).isBlank() || text.substring(indexOfLowLine + 1).isBlank()){
+                sender.execute(MyMessageBuilder.secondCreateTestErrorMessage(chatId));
             } else {
                 String subjectName = text.substring(6, indexOfLowLine);
                 String inputKeys = text.substring(indexOfLowLine + 1);
@@ -178,7 +180,10 @@ public class UpdateHandler {
             sender.execute(MyMessageBuilder.goToMainMenuMessage(chatId));
         } else {
             int indexOfMainCharacter = text.indexOf("#");
+            String regex = "[a-zA-Z]+";
             if (indexOfMainCharacter == -1) {
+                sender.execute(MyMessageBuilder.checkAnswerErrorMessage(chatId));
+            } else if (text.substring(0, indexOfMainCharacter).matches(regex)) {
                 sender.execute(MyMessageBuilder.checkAnswerErrorMessage(chatId));
             } else {
                 String testCode = text.substring(0, indexOfMainCharacter);
@@ -257,6 +262,7 @@ public class UpdateHandler {
             List<TestSubmission> submissions = sortSubmissionsByTestsSolvedDescending(testId);
             test.setStatus(false);
             testRepository.save(test);
+
             for (TestSubmission submission : submissions) {
                 String userId = submission.getUser().getId();
                 sender.execute(MyMessageBuilder.testFinishedMessageForUsers(userId, submission, test));
@@ -274,13 +280,22 @@ public class UpdateHandler {
         String[] medals = {"🥇", "🥈", "🥉"};
 
         StringBuilder results = new StringBuilder();
+        int previousScore = -1;
+        int medalIndex = 0;
         for (int i = 0; i < submissions.size(); i++) {
-            String medal = i < medals.length ? medals[i] : "";
             TestSubmission submission = submissions.get(i);
+            int currentScore = submission.getCorrectAnswersCount();
+
+            if (currentScore != previousScore && medalIndex < medals.length) {
+                previousScore = currentScore;
+                medalIndex++;
+            }
+
+            String medal = medals[medalIndex - 1];
             results.append(i + 1).append(". ")
                     .append(submission.getUser().getFullName())
                     .append(" - ")
-                    .append(submission.getCorrectAnswersCount())
+                    .append(currentScore)
                     .append(" ")
                     .append(medal)
                     .append("\n");
@@ -288,6 +303,9 @@ public class UpdateHandler {
 
         return results.toString();
     }
+
+
+
 
     private String formatString(String input) {
         StringBuilder formattedString = new StringBuilder();

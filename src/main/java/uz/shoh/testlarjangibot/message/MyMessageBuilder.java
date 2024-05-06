@@ -75,44 +75,6 @@ public class MyMessageBuilder {
         return sendMessage;
     }
 
-    public static ReplyKeyboardMarkup getMainButtons() {
-        KeyboardButton createTest = new KeyboardButton("➕ Test yaratish");
-        KeyboardButton checkAnswers = new KeyboardButton("✅ Javoblarni tekshirish");
-        KeyboardRow row = new KeyboardRow(List.of(createTest, checkAnswers));
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(List.of(row));
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        return replyKeyboardMarkup;
-    }
-
-    public static ReplyKeyboardMarkup goBackButton() {
-        KeyboardButton keyboardButton = new KeyboardButton("🔙 Orqaga qaytish");
-        KeyboardRow row = new KeyboardRow(List.of(keyboardButton));
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(List.of(row));
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        return replyKeyboardMarkup;
-    }
-
-    public static InlineKeyboardMarkup createSubscriptionKeyboardMessage() {
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-
-        List<InlineKeyboardButton> firstRow = new ArrayList<>();
-        List<InlineKeyboardButton> secondRow = new ArrayList<>();
-
-        InlineKeyboardButton joinChannel = new InlineKeyboardButton("➕️ Kanalga o'tish");
-        joinChannel.setUrl("https://t.me/matematika_test_21_00");
-        InlineKeyboardButton becomeMember = new InlineKeyboardButton("✅ A'zo bo'ldim");
-        becomeMember.setCallbackData("unsubscribed");
-
-        firstRow.add(joinChannel);
-        secondRow.add(becomeMember);
-
-        keyboard.add(firstRow);
-        keyboard.add(secondRow);
-        keyboardMarkup.setKeyboard(keyboard);
-        return keyboardMarkup;
-    }
-
     public static SendMessage handleSubscribeActionMessage(String chatId, boolean isSubscribed) {
         SendMessage sendMessage = new SendMessage(
                 chatId,
@@ -122,7 +84,6 @@ public class MyMessageBuilder {
                         """
         );
         sendMessage.setReplyMarkup(createSubscriptionKeyboardMessage());
-        //sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
         return sendMessage;
     }
 
@@ -169,9 +130,35 @@ public class MyMessageBuilder {
                                         
                         +test_Fan nomi_To'g'ri javoblar
                                         
-                        ko'rinishida yuboting.
+                        ko'rinishida yuboring.
                         (⚠️Ko'rsatilgan ko'rinishda yubormasangiz
                         javoblarni tekshirishda xatoliklar bo'lishi mumkin)
+                                        
+                        Misol:
+                        +test_Matematika_abccd...
+                        yoki
+                        +test_Matematika_1a2b3c4c5d...
+                        """
+        );
+        sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
+        sendMessage.setReplyMarkup(goBackButton());
+        return sendMessage;
+    }
+
+    public static SendMessage secondCreateTestErrorMessage(String chatId) {
+        SendMessage sendMessage = new SendMessage(
+                chatId,
+                """
+                        ❗Hurmatli foydalanuvchi
+                        Test yaratishda Fan nomi va To'g'ri
+                        javoblarga e'tiborli bo'ling ular bo'sh
+                        holda bo'lishi mumkin emas
+                                                
+                        Xabarni
+                                        
+                        +test_Fan nomi_To'g'ri javoblar
+                                        
+                        ko'rinishida yuboring.
                                         
                         Misol:
                         +test_Matematika_abccd...
@@ -344,28 +331,6 @@ public class MyMessageBuilder {
         return sendMessage;
     }
 
-    public static InlineKeyboardMarkup testCaseControlButton(Test test) {
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-
-        List<InlineKeyboardButton> firstRow = new ArrayList<>();
-        List<InlineKeyboardButton> secondRow = new ArrayList<>();
-
-        InlineKeyboardButton currentSituation = new InlineKeyboardButton("\uD83D\uDCD4Hozirgi holat");
-        currentSituation.setCallbackData("currentSituation%d".formatted(test.getId()));
-        currentSituation.setSwitchInlineQuery(test.getId().toString());
-        InlineKeyboardButton becomeMember = new InlineKeyboardButton("\uD83D\uDD1ATestni yakunlash");
-        becomeMember.setCallbackData("completeTest%d".formatted(test.getId()));
-
-        firstRow.add(currentSituation);
-        secondRow.add(becomeMember);
-
-        keyboard.add(firstRow);
-        keyboard.add(secondRow);
-        keyboardMarkup.setKeyboard(keyboard);
-        return keyboardMarkup;
-    }
-
     public static SendMessage canBeCheckedOnceMessage(String chatId) {
         return new SendMessage(
                 chatId,
@@ -422,10 +387,6 @@ public class MyMessageBuilder {
         );
     }
 
-    /*public static SendMessage testNotFoundMessage(String ownerId) {
-        return new SendMessage(ownerId, "🚫Test topilmadi");
-    }*/
-
     public static SendMessage helpMessage(String chatId) {
         //sendMessage.setParseMode("markdown");
         return new SendMessage(
@@ -470,6 +431,66 @@ public class MyMessageBuilder {
         );
         sendMessage.setParseMode("markdown");
         return sendMessage;
+    }
+
+    public static ReplyKeyboardMarkup getMainButtons() {
+        KeyboardButton createTest = new KeyboardButton("➕ Test yaratish");
+        KeyboardButton checkAnswers = new KeyboardButton("✅ Javoblarni tekshirish");
+        KeyboardRow row = new KeyboardRow(List.of(createTest, checkAnswers));
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(List.of(row));
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        return replyKeyboardMarkup;
+    }
+
+    public static ReplyKeyboardMarkup goBackButton() {
+        KeyboardButton keyboardButton = new KeyboardButton("🔙 Orqaga qaytish");
+        KeyboardRow row = new KeyboardRow(List.of(keyboardButton));
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(List.of(row));
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        return replyKeyboardMarkup;
+    }
+
+    public static InlineKeyboardMarkup createSubscriptionKeyboardMessage() {
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+
+        List<InlineKeyboardButton> firstRow = new ArrayList<>();
+        List<InlineKeyboardButton> secondRow = new ArrayList<>();
+
+        InlineKeyboardButton joinChannel = new InlineKeyboardButton("➕️ Kanalga o'tish");
+        joinChannel.setUrl("https://t.me/matematika_test_21_00");
+        InlineKeyboardButton becomeMember = new InlineKeyboardButton("✅ A'zo bo'ldim");
+        becomeMember.setCallbackData("unsubscribed");
+
+        firstRow.add(joinChannel);
+        secondRow.add(becomeMember);
+
+        keyboard.add(firstRow);
+        keyboard.add(secondRow);
+        keyboardMarkup.setKeyboard(keyboard);
+        return keyboardMarkup;
+    }
+
+    public static InlineKeyboardMarkup testCaseControlButton(Test test) {
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+
+        List<InlineKeyboardButton> firstRow = new ArrayList<>();
+        List<InlineKeyboardButton> secondRow = new ArrayList<>();
+
+        InlineKeyboardButton currentSituation = new InlineKeyboardButton("\uD83D\uDCD4Hozirgi holat");
+        currentSituation.setCallbackData("currentSituation%d".formatted(test.getId()));
+        currentSituation.setSwitchInlineQuery(test.getId().toString());
+        InlineKeyboardButton becomeMember = new InlineKeyboardButton("\uD83D\uDD1ATestni yakunlash");
+        becomeMember.setCallbackData("completeTest%d".formatted(test.getId()));
+
+        firstRow.add(currentSituation);
+        secondRow.add(becomeMember);
+
+        keyboard.add(firstRow);
+        keyboard.add(secondRow);
+        keyboardMarkup.setKeyboard(keyboard);
+        return keyboardMarkup;
     }
 }
 
