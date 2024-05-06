@@ -13,7 +13,6 @@ import uz.shoh.testlarjangibot.bot.MySpringBot;
 @RequiredArgsConstructor
 public class BotInitial {
     private final MySpringBot mySpringBot;
-
     @EventListener({ContextRefreshedEvent.class})
     public void init() throws TelegramApiException {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
